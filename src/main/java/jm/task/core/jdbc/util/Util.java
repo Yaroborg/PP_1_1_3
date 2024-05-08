@@ -9,27 +9,25 @@ public class Util {
     private static final String USERNAME = "roots";
     private static final String PASSWORD = "root";
 
-    public static Connection getConnection() {
-        Connection connection = null;
+    static {
         try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("Соединение установлено");
-        } catch (Exception e) {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            System.out.println("Соединение не установлено");
         }
-        return connection;
-
     }
 
-    public static void closeConnection(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.close();
-                System.out.println("Соединение закрыто");
-            } catch (SQLException e) {
-                // реализуйте настройку соеденения с БД
-            }
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+    }
+
+
+    public static boolean isConnectionValid(Connection connection) {
+        try {
+            return connection != null && !connection.isClosed();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
